@@ -6,6 +6,7 @@ This app is written in JavaScript and it allows students to construct ecological
 - Draw arrows to show feeding relationships with auto-snap to organisms
 - Deletion of arrows
 - Scoring of constructed food web against answers
+- Responsive scaling of images to small and large screen sizes
 
 ## Installation
 Include [Konva JavaScript library](https://konvajs.org/) which provides the interactivity for the canvas. 
