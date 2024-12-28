@@ -40,7 +40,7 @@ const answers = [
   {'id': 6, 'start': 'rabbit', 'end': 'fox'}
 ]
 const correctAns = [];
-let wrongAns = 0;
+let wrongAns = [];
 const arrows = [];
 let activeArrow = null;
 
@@ -71,7 +71,7 @@ function createDraggableImage(obj, x, y) {
           });
 
           activeArrow.on('dblclick dbltap', (e) => {
-              firstMatchIndex = arrows.findIndex((arrow) => {
+              const firstMatchIndex = arrows.findIndex((arrow) => {
                   if(arrow.getAttr('startImg') === e.target.getAttr('startImg') && arrow.getAttr('endImg') === e.target.getAttr('endImg')){
                       return true;
                   } else {
@@ -114,6 +114,15 @@ function createDraggableImage(obj, x, y) {
                   activeArrow.points(points);
                   activeArrow.setAttr('startImg', konvaImage.id());
                   activeArrow.setAttr('endImg', endShape.id());
+
+                  activeArrow.on('pointerenter', function () {
+                    stage.container().style.cursor = 'pointer';
+                  });
+        
+                  activeArrow.on('pointerleave', function () {
+                    stage.container().style.cursor = 'default';
+                  });
+
                   layer.batchDraw();
                   arrows.push(activeArrow);
               } else {
@@ -139,6 +148,14 @@ function createDraggableImage(obj, x, y) {
                   arrow.points(newPoints);
               }
           });
+      });
+
+      konvaImage.on('pointerenter', function () {
+        stage.container().style.cursor = 'pointer';
+      });
+
+      konvaImage.on('pointerleave', function () {
+        stage.container().style.cursor = 'default';
       });
 
       obj.konovaimg = konvaImage;
@@ -181,7 +198,7 @@ if(stage.width() < 640) {
 
 document.getElementById('check-button').addEventListener('click', () => {
       arrows.forEach((arrow) => {
-          ansIndex = answers.findIndex((answer) => {
+          const ansIndex = answers.findIndex((answer) => {
                   if(arrow.getAttr('startImg') === answer.start && arrow.getAttr('endImg') === answer.end){
                       return true;
                   } else {
@@ -189,7 +206,10 @@ document.getElementById('check-button').addEventListener('click', () => {
                   }
               });
           if (ansIndex === -1) { //incorrect arrow drawn
-              wrongAns++;
+              const wrong = arrow.getAttr('startImg') + ">" + arrow.getAttr('endImg');
+              if(!wrongAns.includes(wrong)){ //not a duplicate arrow, has not been penalised yet
+                wrongAns.push(wrong);
+              }
               arrow.stroke('red');
               arrow.fill('red');
           } else { //correct arrow drawn
@@ -199,9 +219,9 @@ document.getElementById('check-button').addEventListener('click', () => {
               }
           }
       });
-      let totalScore = correctAns.length - wrongAns;
+      let totalScore = correctAns.length - wrongAns.length;
       stage.listening(false);
-      document.getElementById('score').innerHTML = "Correct: " + correctAns.length + "<br>" + "Incorrect: " + wrongAns + "<br>" + "Final Score: " + totalScore;
+      document.getElementById('score').innerHTML = "Correct: " + correctAns.length + "<br>" + "Incorrect: " + wrongAns.length + "<br>" + "Final Score: " + totalScore;
       document.getElementById('score').style.display = "block";
 });
 
