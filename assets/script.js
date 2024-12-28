@@ -178,8 +178,17 @@ if(stage.width() < 640) {
       const x = 0.1 * stage.width() + col * (imageWidth + padding) + padding;
       const y = row * (imageHeight + padding) + padding;
 
+      // Calculate the total height occupied based on the last image placed and extend the stage height if necessary
+      if(index === images.length - 1){
+        const totalHeight = y + imageHeight + padding;
+        if(totalHeight > stage.height()){
+            stage.height(totalHeight);
+        }
+      }
+
       createDraggableImage(obj, x, y);
   });
+
 } else {
   const padding = 0.05 * stage.width();
   const columns = 3;
@@ -192,6 +201,15 @@ if(stage.width() < 640) {
 
       const x = 0.2 * stage.width() + col * (imageWidth + padding) + padding;
       const y = row * (imageHeight + padding) + padding;
+
+      // Calculate the total height occupied based on the last image placed and extend the stage height if necessary
+      if(index === images.length - 1){
+        const totalHeight = y + imageHeight + padding;
+        if(totalHeight > stage.height()){
+            stage.height(totalHeight);
+        }
+      }
+
       createDraggableImage(obj, x, y);
   });
 }
